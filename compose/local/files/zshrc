@@ -1,0 +1,110 @@
+export PYTHONPATH=$PYTHONPATH:/app
+export PATH=$PATH:/usr/games
+export TERM=xterm-256color
+
+setopt histignorealldups sharehistory
+
+# Keep 1000 lines of history within the shell and save it to ~/.zsh_history:
+HISTSIZE=1000
+SAVEHIST=1000
+HISTFILE=~/.zsh_history
+
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' format 'Completing %d'
+zstyle ':completion:*' group-name ''
+zstyle ':completion:*' menu select=2
+eval "$(dircolors -b)"
+zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '' 'm:{a-z}={A-Z}' 'm:{a-zA-Z}={A-Za-z}' 'r:|[._-]=* r:|=* l:|=*'
+zstyle ':completion:*' menu select=long
+zstyle ':completion:*' select-prompt %SScrolling active: current selection at %p%s
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' verbose true
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path $HOME/.zshcache
+
+zstyle ':completion:*:*:kill:*:processes' list-colors '=(#b) #([0-9]#)*=0=01;31'
+zstyle ':completion:*:kill:*' command 'ps -u $USER -o pid,%cpu,tty,cputime,cmd'
+zstyle ':omz:update' mode auto
+
+# Path to your oh-my-zsh installation.
+export ZSH="/home/mtom/.oh-my-zsh"
+export ZSH_CUSTOM="$ZSH/custom"
+
+# Install ohmyzsh if not present.
+if [[ ! -f "$ZSH/oh-my-zsh.sh" ]]; then
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh) --unattended"
+fi
+
+if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-completions" ]]; then
+    git clone https://github.com/zsh-users/zsh-completions "$ZSH_CUSTOM/plugins/zsh-completions"
+fi
+
+if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting" ]]; then
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/plugins/zsh-syntax-highlighting"
+fi
+
+if [[ ! -d "$ZSH_CUSTOM/plugins/zsh-autosuggestions" ]]; then
+    git clone https://github.com/zsh-users/zsh-autosuggestions "$ZSH_CUSTOM/plugins/zsh-autosuggestions"
+fi
+
+# Use modern completion system
+fpath+=($ZSH/plugins/docker)
+autoload -Uz compinit && compinit
+
+# See https://github.com/ohmyzsh/ohmyzsh/wiki/Themes
+ZSH_THEME="agnoster"
+
+# Which plugins would you like to load?
+# Standard plugins can be found in $ZSH/plugins/
+# Custom plugins may be added to $ZSH_CUSTOM/plugins/
+# Example format: plugins=(rails git textmate ruby lighthouse)
+# Add wisely, as too many plugins slow down shell startup.
+plugins=(
+  python
+  pep8
+  history-substring-search
+  colored-man-pages
+  colorize
+  systemd
+  sudo
+  celery
+  git
+  zsh-completions
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
+source "$ZSH"/oh-my-zsh.sh
+
+rm -f ~/.zcomp*
+
+# makes the autosuggest part more dark for darker terminals.  If you use a light theme terminal
+# you can set this in your ~/data/.zsh_docker file.  See:
+# https://stackoverflow.com/questions/47310537/how-to-change-zsh-autosuggestions-color
+# export ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=#555555"
+
+# some more ls aliases
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -Galh'
+alias d='sudo du --max-depth=1'
+alias hig='history | grep -v grep | grep'
+alias fig='find . | grep -i'
+alias gpp='git pull && git push'
+alias psg='ps auxww | grep -v grep | grep'
+
+alias pbcopy='xclip -selection clipboard'
+alias pbpaste='xclip -selection clipboard -o'
+
+# safely pass the password to psql
+export PGPASSWORD="${PGPASSWORD:-root}"
+
+# .env environment variables if you got them
+[[ ! -f $HOME/.env ]] || source $HOME/.env
+
+if [ -f /etc/motd ]; then
+  . /etc/motd
+fi

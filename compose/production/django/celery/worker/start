@@ -1,0 +1,9 @@
+#!/bin/bash
+
+set -o errexit
+set -o pipefail
+set -o nounset
+
+QUEUES=${QUEUES-high,medium,low}
+
+exec celery -A mtom worker -l INFO -Q "$QUEUES"

@@ -1,0 +1,144 @@
+version: "3.5"
+
+services:
+  postgres:
+    build:
+      context: compose/local/postgres
+      dockerfile: Dockerfile
+    container_name: postgres
+    restart: "unless-stopped"
+    environment:
+      POSTGRES_DB: mtom-dev
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: root
+    volumes:
+      - postgres_data:/var/lib/postgresql/data:rw
+    ports:
+      - "5432:5432"
+    networks:
+      - mtomdev
+
+  redis:
+    image: redis:5.0-stretch
+    restart: "unless-stopped"
+    container_name: redis
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      DATABASES: 16
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./compose/local/redis/redis.conf:/usr/local/etc/redis/redis.conf:ro
+      - redis_data:/var/lib/redis:rw
+    entrypoint: [ redis-server, '/usr/local/etc/redis/redis.conf' ]
+    networks:
+      - mtomdev
+
+  mtom:
+    build:
+      context: .
+      dockerfile: compose/local/django/Dockerfile
+    container_name: mtom
+    restart: "no"
+    tty: true
+    stdin_open: true
+    environment:
+      DJANGO_ENV: ${DJANGO_ENV:-local}
+      DJANGO_SETTINGS_MODULE: config.settings
+      DJANGO_READ_DOT_ENV_FILE: "true"
+      WAIT_HOSTS: postgres:5432,redis:6379
+    volumes:
+      - .:/app
+      # this is a workaround to prevent host node_modules from accidently getting mounted in container
+      # in case you want to use node/npm both outside container for test/lint etc. and also inside container
+      # this will overwrite the default node_modules dir in the container, so it won't conflict with our
+      # /app/node_modules location.
+      - notused:/app/node_modules
+      - mtom_data:/home/mtom
+    ports:
+      - "8000:8000"
+      - "8888:8888"
+      - "9001:9001"
+    depends_on:
+      - postgres
+      - redis
+    command: compose/local/django/start
+    networks:
+      - mtomdev
+
+  mtom_worker:
+    build:
+      context: .
+      dockerfile: compose/local/django/Dockerfile
+    container_name: mtom_worker
+    restart: "no"
+    environment:
+      DJANGO_ENV: ${DJANGO_ENV:-local}
+      DJANGO_SETTINGS_MODULE: config.settings
+      DJANGO_READ_DOT_ENV_FILE: "true"
+      WAIT_HOSTS: postgres:5432,redis:6379
+    volumes:
+      - .:/app
+      - worker_data:/home/mtom
+    depends_on:
+      - postgres
+      - redis
+    command: compose/local/django/celery/worker/start
+    networks:
+      - mtomdev
+
+  mtom_beat:
+    build:
+      context: .
+      dockerfile: compose/local/django/Dockerfile
+    container_name: mtom_beat
+    restart: "no"
+    environment:
+      DJANGO_ENV: ${DJANGO_ENV:-local}
+      DJANGO_SETTINGS_MODULE: config.settings
+      DJANGO_READ_DOT_ENV_FILE: "true"
+      WAIT_HOSTS: postgres:5432,redis:6379
+    volumes:
+      - .:/app
+      - beat_data:/home/mtom
+    depends_on:
+      - postgres
+      - redis
+    command: compose/local/django/celery/beat/start
+    networks:
+      - mtomdev
+
+  mtomproxy:
+    build:
+      context: .
+      dockerfile: compose/local/django/Dockerfile
+    container_name: mtomproxy
+    restart: "no"
+    environment:
+      DJANGO_ENV: proxy
+      DJANGO_SETTINGS_MODULE: config.settings
+      DJANGO_READ_DOT_ENV_FILE: "true"
+      WAIT_HOSTS: postgres:5432,redis:6379
+    volumes:
+      - .:/app
+    depends_on:
+      - postgres
+      - redis
+    ports:
+        - "8800:8800"
+    command: compose/local/django/proxy/start
+    networks:
+      - mtomdev
+
+volumes:
+    mtom_data:
+    postgres_data:
+    redis_data:
+    worker_data:
+    beat_data:
+        driver: local
+    notused:
+
+networks:
+    mtomdev:
+        name: mtomdev

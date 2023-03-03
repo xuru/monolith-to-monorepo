@@ -1,0 +1,247 @@
+[tool.black]
+line-length = 120
+target-version = ['py39', 'py310']
+include = '\.pyi?$'
+
+[tool.bandit]
+# Skip `B320` and `B410` because the suggestion is out-of-date (see
+# https://git.io/JM7Ow)
+skips = ["B320", "B410"]
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+line_length = 120
+default_section = "THIRDPARTY"
+known_first_party = ["users"]
+known_third_party = ["allauth", "apns2", "auditlog", "backoff", "boto3", "botocore", "celery", "cryptography", "dateutil", "django", "django_admin_inline_paginator", "django_filters", "django_structlog", "django_stubs_ext", "django_tables2", "djangosaml2", "drf_yasg", "dwollav2", "environ", "faker", "freezegun", "health_check", "isodate", "jose", "jwt", "modeltranslation", "oauth2_provider", "ordered_model", "phonenumber_field", "plaid", "polygon", "pytz", "requests", "requests_cache", "responses", "rest_framework", "rest_framework_nested", "sentry_sdk", "stripe", "structlog"]
+
+[tool.pytest.ini_options]
+minversion = "6.0"
+required_plugins = ["pytest-django", "pytest-cov"]
+DJANGO_SETTINGS_MODULE = "config.settings"
+python_paths = ["mtom", "proxy"]
+filterwarnings = ["error", "ignore::UserWarning", "ignore::django.utils.deprecation.RemovedInDjango40Warning", "ignore::django.utils.deprecation.RemovedInDjango41Warning", "ignore::DeprecationWarning"]
+norecursedirs = "migrations"
+addopts = ["--strict", "--tb=short", "-ra", "--pyargs"]
+junit_family = "legacy"
+testpaths = ["mtom", "proxy"]
+
+[tool.coverage.run]
+source = ["mtom"]
+branch = true
+omit = ["**/tests/**", "**/migrations/**", "**/data_migrations/**", "manage.py", "config/wsgi.py", "urls.py", "**/mock_apis/**"]
+
+[tool.coverage.report]
+fail_under = 60
+skip_covered = true
+show_missing = true
+exclude_lines = ["pragma: no cover", "raise NotImplementedError", "pass"]
+
+[tool.mypy]
+python_version = "3.10"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+strict_optional = false
+follow_imports = "silent"
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-check_untyped_defs
+#check_untyped_defs = false
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-disallow_untyped_calls
+disallow_untyped_calls = false
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-warn_unreachable
+warn_unreachable = true
+# https://mypy.readthedocs.io/en/stable/config_file.html#confval-no_implicit_optional
+#no_implicit_optional = true
+#strict_equality = true
+
+# output style
+show_column_numbers = true
+show_absolute_path = true
+show_error_codes = true
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[[tool.mypy.overrides]]
+module = ["*.migrations.*", "__init__", "config"]
+ignore_errors = true
+
+[mypy.plugins.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.mypy_django_plugin]
+ignore_missing_model_attributes = true
+
+[tool.django-stubs]
+django_settings_module = "config.settings"
+
+[tool.poetry]
+name = "mtom"
+version = "1.1.0"
+description = "The backend services and libraries"
+authors = ["Your Name <you@example.com>"]
+
+[tool.poetry.group.test]
+optional = true
+[tool.poetry.group.lint]
+optional = true
+
+[tool.poetry.dependencies]
+python = "^3.10"
+argon2-cffi = "19.2.0"
+asgiref = "3.4.1"
+aws-encryption-sdk = "3.0.0"
+boto3 = "^1.24.71"
+botocore = "^1.27.71"
+cryptography = "35.0.0"
+Django = "3.2"
+django-admin-env-notice = "0.2"
+django-admin-honeypot = "1.1.0"
+django-admin-inline-paginator = "0.1.1"
+django-advanced-filters = "1.3.0"
+django-auditlog = "1.0"
+django-bootstrap3 = "14.2.0"
+django-cors-headers = "3.4.0"
+django-deprecate-fields = "0.1.1"
+django-environ = "0.8.1"
+django-filter = "2.4.0"
+django-health-check = "3.16.2"
+django-model-utils = "4.0.0"
+django-modeltranslation = "0.17.3"
+django-nested-inline = "0.4.2"
+django-oauth-toolkit = "1.5.0"
+django-ordered-model = "3.4.3"
+django-otp = "1.0.2"
+django-split-settings = "1.1.0"
+django-storages = "1.11.1"
+django-structlog = "2.1.0"
+django-stubs-ext = ">=0.4.0"
+django-tables2 = "2.3.4"
+django-waffle = "2.2.1"
+djangorestframework = "^3.14.0"
+djangorestframework-camel-case = "1.2.0"
+djangosaml2 = "1.2.0"
+drf-nested-routers = "0.92.1"
+drf-yasg = "^1.21.4"
+#dwollav2 = "~=2.2.0"
+Faker = "~=8.10.1"
+freezegun = "~=1.1.0"
+fuzzywuzzy = "0.18.0"
+gunicorn = "20.1.0"
+isodate = "0.6.0"
+pandas = "~=1.3.3"
+plaid-python = "10.0.0"
+polygon-api-client = "0.2.11"
+psutil = "5.8.0"
+psycopg2-binary = "^2.9.3"
+PyJWT = "1.7.1"
+pysaml2 = "~=7.0.1"
+python-dateutil = "~=2.8.1"
+python-Levenshtein = "0.12.2"
+python-slugify = "4.0.0"
+pytz = "^2022.7.1"
+qrcode = "6.1"
+redis = "~=3.5.3"
+requests = "^2.26.0"
+requests-cache = "0.7.2"
+requests-oauthlib = "1.3.0"
+reticker = "3.1.3"
+sentry-sdk = "1.4.3"
+silasdk = "0.2.49"
+slack-sdk = "3.11.2"
+stripe = "^4.1.0"
+structlog = "~=21.1.0"
+structlog-sentry = "1.4.0"
+tenacity = "~=8.0.1"
+urllib3 = "~=1.26.6"
+uvicorn = "0.16.0"
+vero = "2.0.1"
+weasyprint = "52.5"
+xhtml2pdf = "0.2.5"
+zerobouncesdk = "0.0.6"
+setuptools = "^65.3.0"
+django-phonenumber-field = {version = "5.0.0", extras = ["phonenumbers"]}
+django-push-notifications = "^3.0.0"
+python-jose = {version = "3.3.0", extras = ["cryptography"]}
+python-redis-lock = {version = "3.7.0", extras = ["django"]}
+django-webpack-loader = "1.1.0"
+django-email-verification = "~=0.0.7"
+semantic-version = "2.8.5"
+analytics-python = "^1.4.0"
+django-cache-memoize = "^0.1.10"
+django-bulk-sync = "^3.3.0"
+user-agents = "^2.2.0"
+django-timescaledb = "^0.2.11"
+django-ninja = "^0.19.0"
+alpaca-py = "^0.5.4"
+apns2-up = "^0.7.4"
+# to be removed...
+random-address = "1.1.1"
+responses = "^0.16.0"
+jnt-django-admin-tools = "^0.12.17"
+h2 = {git = "https://github.com/ahd985/h2.git", rev = "py310"}
+nameparser = "^1.1.1"
+django-oauth2-authcodeflow = "0.8.0"
+zeep = "^4.1.0"
+django-ipware = "^4.0.2"
+django-opensearch-dsl = "^0.5.0"
+requests-aws4auth = "^1.1.2"
+isort = "5.12.0"
+drf-jwt = "^1.19.2"
+whitenoise = "^6.4.0"
+celery = "^5.2.7"
+django-celery-beat = "^2.4.0"
+django-celery-results = "^2.4.0"
+
+[tool.poetry.group.dev.dependencies]
+django-debug-toolbar = "3.2.2"
+django-extensions = "3.1.5"
+factory-boy = "3.2.1"
+ipdb = "0.13.9"
+ipywidgets = "^7.6.5"
+jupyter = "^1.0.0"
+jupyter-server = "1.13.5"
+jupyterlab = "3.3.1"
+jupyterlab-vim = "^0.14.5"
+matplotlib = "3.5.1"
+requests-toolbelt = "0.9.1"
+Sphinx = "4.3.2"
+watchgod = "^0.7"
+financedatabase = "^1.0.2"
+pygit2 = "^1.11.1"
+
+[tool.poetry.group.test.dependencies]
+coverage = "6.3.1"
+pytest = "^6.2.5"
+pytest-antilru = "1.0.5"
+pytest-asyncio = "0.16.0"
+pytest-cov = "3.0.0"
+pytest-django = "4.5.2"
+pytest-env = "0.6.2"
+pytest-sugar = "0.9.4"
+pytest-xdist = "2.5.0"
+django-coverage-plugin = "2.0.2"
+responses = "^0.16.0"
+freezegun = "1.1.0"
+random-address = "1.1.1"
+moto = {version = "2.2.17", extras = ["all"]}
+
+mypy = "0.931"
+django-stubs = "1.8.0"
+djangorestframework-stubs = "1.4.0"
+types-python-dateutil = "2.8.4"
+types-pytz = "2021.3.3"
+types-requests = "2.26.2"
+locust = "^2.13.1"
+locust-plugins = "^2.7.2"
+
+[tool.poetry.group.lint.dependencies]
+autopep8 = "1.6.0"
+flake8 = "4.0.1"
+pylint = "2.12.2"
+pylint-django = "2.4.4"
+pre-commit = "^2.20.0"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
