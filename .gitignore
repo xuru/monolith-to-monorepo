@@ -113,3 +113,6 @@ venv.bak/
 /.idea/modules.xml
 /.idea/monolith-to-monorepo.iml
 /.idea/vcs.xml
+/.build-support/
+/.pants.d/
+/.pids/
