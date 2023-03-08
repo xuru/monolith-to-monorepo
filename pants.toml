@@ -32,7 +32,7 @@ ignore_adding_targets = ['django:manage']
 [python]
 interpreter_constraints = ["==3.10.*"]
 enable_resolves = true
-resolves = { python-default = ".build-support/python-default.lock" }
+resolves = { python-default = "build-support/python-default.lock" }
 
 [python-infer]
 string_imports = true
@@ -42,7 +42,7 @@ shell = "ipython"
 
 [ipython]
 version = "ipython==7.23.1"
-lockfile = ".build-support/ipython.lockfile"
+lockfile = "build-support/ipython.lockfile"
 
 ################################################################################
 # Unit tests
@@ -54,7 +54,7 @@ extra_env_vars = [
 ]
 
 [pytest]
-lockfile = ".build-support/pytest.lockfile"
+lockfile = "build-support/pytest.lockfile"
 args = [
     "-ra -q -vv --no-header",
     "--reuse-db",
@@ -74,7 +74,7 @@ execution_slot_var = "PANTS_EXECUTION_SLOT"
 ################################################################################
 [mypy]
 version = "mypy==0.961"
-lockfile = ".build-support/mypy.lockfile"
+lockfile = "build-support/mypy.lockfile"
 args = [
   "--non-interactive",
   "--install-types",
@@ -92,12 +92,12 @@ config = "pyproject.toml"
 ################################################################################
 [black]
 version = "black==22.12.0"
-lockfile = ".build-support/black.lockfile"
+lockfile = "build-support/black.lockfile"
 config = "pyproject.toml"
 
 [autoflake]
 version = "autoflake==2.0.0"
-lockfile = ".build-support/autoflake.lockfile"
+lockfile = "build-support/autoflake.lockfile"
 args = [
     "--in-place",
     "--ignore-init-module-imports",
@@ -109,7 +109,7 @@ args = [
 
 [pyupgrade]
 version = "pyupgrade==3.3.1"
-lockfile = ".build-support/pyupgrade.lockfile"
+lockfile = "build-support/pyupgrade.lockfile"
 args = ["--py310-plus"]
 
 ################################################################################
@@ -117,7 +117,7 @@ args = ["--py310-plus"]
 ################################################################################
 [bandit]
 version = "bandit[toml]==1.7.4"
-lockfile = ".build-support/bandit.lockfile"
+lockfile = "build-support/bandit.lockfile"
 args = [
   "-iii", "-ll", "-c", "pyproject.toml"
 ]
@@ -125,7 +125,7 @@ config = "pyproject.toml"
 
 [flake8]
 version = "flake8>=6.0.0,<7"
-lockfile = ".build-support/flake8.lockfile"
+lockfile = "build-support/flake8.lockfile"
 extra_requirements = [
     "setuptools",
     "flake8-isort",
@@ -138,6 +138,6 @@ extra_requirements = [
 
 [isort]
 version = "isort==5.8.0"
-lockfile = ".build-support/isort.lockfile"
+lockfile = "build-support/isort.lockfile"
 args = ["-v", "--profile=black" ]
 config = "pyproject.toml"
