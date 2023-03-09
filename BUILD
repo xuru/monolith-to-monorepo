@@ -24,12 +24,15 @@ poetry_requirements(
         "python-phonenumbers": ["phonenumbers"],
         "django-push-notifications": ["push_notifications"],
         "django-advanced-filters": ["advanced_filters"],
+        "django-environ": ["environ"],
+        "django-split-settings": ["split_settings"],
+        "djangosaml2": ["saml2"],
         "drf-jwt": ["rest_framework_jwt"],
+        "attrs": ["attrs"],
     }
 )
 
 python_sources(
     name="root",
     dependencies=[":req"],
-    sources=['*.py', '**/*.py',  "!**/test_*.py", "!**/conftest.py", '!conftest.py']
 )

@@ -23,7 +23,7 @@ DJANGO_SETTINGS_MODULE = "config.settings"
 python_paths = ["mtom", "proxy"]
 filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
 norecursedirs = "migrations"
-addopts = ["--strict", "--tb=short", "-ra", "--pyargs"]
+addopts = ["-sv", "--strict", "--tb=short", "-ra", "--pyargs"]
 junit_family = "legacy"
 testpaths = ["mtom", "proxy"]
 

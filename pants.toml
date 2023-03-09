@@ -50,15 +50,11 @@ lockfile = "build-support/ipython.lockfile"
 [test]
 extra_env_vars = [
   "DJANGO_SETTINGS_MODULE=config.settings",
-  "DJANGO_ENV=local"
+  "DJANGO_ENV=test"
 ]
 
 [pytest]
 lockfile = "build-support/pytest.lockfile"
-args = [
-    "--reuse-db",
-    "--no-migrations"
-]
 extra_requirements = [
     "pytest-django",
     "pytest-cov",
