@@ -30,6 +30,6 @@ poetry_requirements(
 
 python_sources(
     name="root",
-    run_goal_use_sandbox=False,
-    dependencies=[":req"]
+    dependencies=[":req"],
+    sources=['*.py', '**/*.py',  "!**/test_*.py", "!**/conftest.py", '!conftest.py']
 )

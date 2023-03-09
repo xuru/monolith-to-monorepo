@@ -21,7 +21,7 @@ minversion = "6.0"
 required_plugins = ["pytest-django", "pytest-cov"]
 DJANGO_SETTINGS_MODULE = "config.settings"
 python_paths = ["mtom", "proxy"]
-filterwarnings = ["error", "ignore::UserWarning", "ignore::django.utils.deprecation.RemovedInDjango40Warning", "ignore::django.utils.deprecation.RemovedInDjango41Warning", "ignore::DeprecationWarning"]
+filterwarnings = ["error", "ignore::UserWarning", "ignore::DeprecationWarning"]
 norecursedirs = "migrations"
 addopts = ["--strict", "--tb=short", "-ra", "--pyargs"]
 junit_family = "legacy"
